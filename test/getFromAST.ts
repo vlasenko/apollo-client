@@ -264,24 +264,62 @@ describe('AST utility functions', () => {
 
     const fullDoc = addFragmentsToDocument(query, businessAreaInfo);
 
-    assert.equal(print(fullDoc), `{
-  businessAreas {
-    ...businessAreaInfo
-  }
-}
+    assert.equal(print(fullDoc), print(gql`
+      {
+        businessAreas {
+          ...businessAreaInfo
+        }
+      }
 
-fragment subjectInfo on Subject {
-  id
-  name
-}
+      fragment subjectInfo on Subject {
+        id
+        name
+      }
 
-fragment businessAreaInfo on BusinessArea {
-  id
-  name
-  subjects {
-    ...subjectInfo
-  }
-}
-`);
+      fragment businessAreaInfo on BusinessArea {
+        id
+        name
+        subjects {
+          ...subjectInfo
+        }
+      }
+    `));
+
+    // Second example, from react-apollo
+    const query2 = gql`
+      query peopleAndShips {
+        allPeople(first: 1) {
+          __typename
+          ...Person
+        }
+        allShips(first: 1) {
+          __typename
+          ...ships
+        }
+      }
+      fragment Person on PeopleConnection { people { name } }
+    `;
+    const shipFragment = createFragment(gql`
+      fragment ships on ShipsConnection { starships { name } }
+    `);
+
+    const mockedQuery = gql`
+      query peopleAndShips {
+        allPeople(first: 1) {
+          __typename
+          ...Person
+        }
+        allShips(first: 1) {
+          __typename
+          ...ships
+        }
+      }
+      fragment Person on PeopleConnection { people { name } }
+      fragment ships on ShipsConnection { starships { name } }
+    `;
+
+    const combined = addFragmentsToDocument(query2, shipFragment);
+
+    assert.equal(print(combined), print(mockedQuery));
   });
 });
