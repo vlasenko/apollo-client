@@ -382,6 +382,32 @@ describe('QueryManager', () => {
 
   });
 
+  it.only('handles non-GraphQL errors', (done) => {
+    assertWithObserver({
+      query: gql`
+      query people {
+        allPeople(first: 1) {
+          people {
+            name
+          }
+        }
+      }`,
+      error: new Error('this is an error'),
+      observer: {
+        next(result) {
+          done(new Error('Returned data when it was supposed to error out.'));
+        },
+
+        error(apolloError) {
+          console.log(apolloError)
+          assert(apolloError);
+          done();
+        },
+      },
+    });
+
+  });
+
   it('empty error array (handle non-spec-compliant server) #156', (done) => {
     assertWithObserver({
       query: gql`
