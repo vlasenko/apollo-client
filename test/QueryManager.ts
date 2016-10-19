@@ -3244,7 +3244,7 @@ describe('QueryManager', () => {
     `;
 
     const networkInterface = mockNetworkInterface({
-      request: { query },
+      request: { query: netQuery },
       result: { data },
     });
 
@@ -3261,12 +3261,14 @@ describe('QueryManager', () => {
     });
 
     return qm.query({ query }).then((result) => {
-      assert.equal(result.data, {
+      assert.deepEqual(result.data, {
         person: {
           firstName: 'Luke',
           lastName: 'Skywalker',
+          fullName: 'Luke Skywalker',
+          __typename: 'Person',
         },
-      })
-    })
+      });
+    });
   });
 });
