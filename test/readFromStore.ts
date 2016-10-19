@@ -594,9 +594,11 @@ describe('reading from the store', () => {
           computedField(extra: "bit") @client
         }
       `,
-      customResolvers: {
-        Thing: {
-          computedField: (obj, args) => obj.stringField + obj.numberField + args['extra'],
+      config: {
+        customResolvers: {
+          Thing: {
+            computedField: (obj, args) => obj.stringField + obj.numberField + args['extra'],
+          },
         },
       },
     });
@@ -630,9 +632,11 @@ describe('reading from the store', () => {
           computedField(extra: "bit") @client
         }
       `,
-      customResolvers: {
-        Query: {
-          computedField: (obj, args) => obj.stringField + obj.numberField + args['extra'],
+      config: {
+        customResolvers: {
+          Query: {
+            computedField: (obj, args) => obj.stringField + obj.numberField + args['extra'],
+          },
         },
       },
     });
