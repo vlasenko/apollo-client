@@ -2,6 +2,9 @@
 
 Expect active development and potentially significant breaking changes in the `0.x` track. We'll try to be diligent about releasing a `1.0` version in a timely fashion (ideally within 3 to 6 months), to signal the start of a more stable API.
 
+### v0.4.22
+ - Fix an issue with `observableQuery.currentResult()` when the query had returned an error.
+
 ### v0.4.21
  - Added some temporary functions (`_setVariablesNoResult` and `_setOptionsNoResult`) to work around a `react-apollo` problem fundamentally caused by the issue highlighted in [PR #694](https://github.com/apollostack/apollo-client/pull/694). The code as been refactored on `master`, so we expect it to be fixed in 0.5.x, and is not worth resolving now.
 
