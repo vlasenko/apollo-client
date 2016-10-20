@@ -18,10 +18,20 @@ import {
   ApolloQueryResult,
 } from './index';
 
+import {
+  ApolloError,
+} from './errors';
+
 import { tryFunctionOrLogError } from './util/errorHandling';
 
 import assign = require('lodash.assign');
 import isEqual = require('lodash.isequal');
+
+export type ApolloCurrentResult = {
+  data: any;
+  loading: boolean;
+  error?: ApolloError;
+}
 
 export interface FetchMoreOptions {
   updateQuery: (previousQueryResult: Object, options: {
@@ -286,9 +296,18 @@ export class ObservableQuery extends Observable<ApolloQueryResult> {
     });
   }
 
-  public currentResult(): ApolloQueryResult {
+  public currentResult(): ApolloCurrentResult {
     const { data, partial } = this.queryManager.getCurrentQueryResult(this);
     const queryStoreValue = this.queryManager.getApolloState().queries[this.queryId];
+
+    if (queryStoreValue && (queryStoreValue.graphQLErrors || queryStoreValue.networkError)) {
+      const error = new ApolloError({
+        graphQLErrors: queryStoreValue.graphQLErrors,
+        networkError: queryStoreValue.networkError,
+      });
+      return { data: {}, loading: false, error };
+    }
+
     const queryLoading = !queryStoreValue || queryStoreValue.loading;
 
     // We need to be careful about the loading state we show to the user, to try
